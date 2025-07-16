@@ -13,6 +13,7 @@ import Contact from './pages/Contact';
 import SearchResults from './pages/SearchResults';
 import NewsDetail from './pages/NewsDetail';
 import ProductDetail from './pages/ProductDetail';
+import MyOrder from './pages/MyOrder';
 
 function App() {
   return (
@@ -115,6 +116,15 @@ function App() {
               <>
                 <PageTitle title="Sukimoko - search" />
                 <SearchResults />
+              </>
+            }
+          />
+          <Route
+            path="/my-orders"
+            element={
+              <>
+                <PageTitle title="Sukimoko - my-order" />
+                <MyOrder />
               </>
             }
           />

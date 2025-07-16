@@ -12,7 +12,8 @@ const Sidebar = ({
   onSelectPriceRange,
 }) => {
   return (
-    <div className="bg-white rounded-lg p-4 shadow-md space-y-6 w-30 md:w-40 lg:w-80 hidden  md:block lg:block">
+    // w-30 md:w-40 lg:w-80
+    <div className="bg-white rounded-lg p-4 shadow-md space-y-6  hidden  md:block lg:block">
       <div>
         <h3 className="font-semibold text-lg mb-3">Danh mục sản phẩm</h3>
         <ul className="space-y-2">

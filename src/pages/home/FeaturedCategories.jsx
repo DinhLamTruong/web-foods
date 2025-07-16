@@ -1,4 +1,3 @@
-
 import { FaAward } from 'react-icons/fa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,90 +28,54 @@ import 'swiper/css/pagination';
 const categories = [
   {
     id: 1,
-    label: 'Giấy ăn 3 màu',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
+    label: 'Combo giấy cuộn siêu hời',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smnszo1ft0d6.webp',
     description: 'Mô tả chi tiết giấy ăn 3 màu.',
   },
   {
     id: 2,
-    label: 'Giấy ăn đa sắc',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
+    label: ' Khăn giấy ướt',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smq5g4g29a31.webp',
     description: 'Mô tả chi tiết giấy ăn đa sắc.',
   },
   {
     id: 3,
-    label: 'Giấy gấu trúc',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
+    label: 'Khăn giấy rút treo tường',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smnszo1ft0d6.webp',
     description: 'Mô tả chi tiết giấy gấu trúc.',
   },
   {
     id: 4,
-    label: 'Giấy rút đa sắc',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
+    label: 'Khăn giấy rút',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smi7lsqpgu46.webp',
     description: 'Mô tả chi tiết giấy rút đa sắc.',
   },
-  {
+   {
     id: 5,
-    label: 'Giấy rút Sắc Việt',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết giấy rút Sắc Việt.',
+    label: 'Combo giấy cuộn siêu hời',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smnszo1ft0d6.webp',
+    description: 'Mô tả chi tiết giấy ăn 3 màu.',
   },
   {
     id: 6,
-    label: 'Giấy rút GiaGia',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết giấy rút GiaGia.',
+    label: ' Khăn giấy ướt',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smq5g4g29a31.webp',
+    description: 'Mô tả chi tiết giấy ăn đa sắc.',
   },
   {
     id: 7,
-    label: 'Giấy rút tiêu hạ',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết giấy rút tiêu hạ.',
+    label: 'Khăn giấy rút treo tường',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smnszo1ft0d6.webp',
+    description: 'Mô tả chi tiết giấy gấu trúc.',
   },
   {
     id: 8,
-    label: 'Giấy rút gấu trúc',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết giấy rút gấu trúc.',
+    label: 'Khăn giấy rút',
+    img: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ra0g-m9smi7lsqpgu46.webp',
+    description: 'Mô tả chi tiết giấy rút đa sắc.',
   },
-  {
-    id: 9,
-    label: 'Khăn ướt đa sắc 80 tờ',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết khăn ướt đa sắc 80 tờ.',
-  },
-  {
-    id: 10,
-    label: 'Khăn ướt mini 8 tờ',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết khăn ướt mini 8 tờ.',
-  },
-  {
-    id: 11,
-    label: 'Nước giặt',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết nước giặt.',
-  },
-  {
-    id: 12,
-    label: 'Viên giặt',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết viên giặt.',
-  },
-  {
-    id: 13,
-    label: 'Nước rửa chén',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết nước rửa chén.',
-  },
-  {
-    id: 14,
-    label: 'Nước giặt đồ lót',
-    img: 'https://khangiaysukimoko.com/img/More/header_img.png',
-    description: 'Mô tả chi tiết nước giặt đồ lót.',
-  },
+ 
 ];
-
 
 const FeatureCategories = () => {
   const [dragStartX, setDragStartX] = useState(null);
@@ -153,9 +116,12 @@ const FeatureCategories = () => {
           type: 'bullets',
           // Removed custom pagination container to use default pagination
           // el: '.custom-swiper-pagination',
-          renderBullet: (index, className) => (
-            `<span class="${className}" style="background:${className.includes('swiper-pagination-bullet-active') ? '#43bb1b' : '#ccc'} margin-top:10px"></span>`
-          ),
+          renderBullet: (index, className) =>
+            `<span class="${className}" style="background:${
+              className.includes('swiper-pagination-bullet-active')
+                ? '#43bb1b'
+                : '#ccc'
+            } margin-top:10px"></span>`,
         }}
         breakpoints={{
           1024: { slidesPerView: 6 },
@@ -164,7 +130,7 @@ const FeatureCategories = () => {
         }}
       >
         {categories.map(category => (
-          <SwiperSlide key={category.id} className='mb-8'>
+          <SwiperSlide key={category.id} className="mb-8">
             <div
               className="cursor-pointer flex flex-col items-center"
               onMouseDown={e => setDragStartX(e.clientX)}
@@ -173,7 +139,7 @@ const FeatureCategories = () => {
               <img
                 src={category.img}
                 alt={category.label}
-                className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40 object-cover rounded-md mb-2"
+                className="w-30 h-20 md:w-40 md:h-30 lg:w-50 lg:h-40 object-cover rounded-md mb-2"
               />
               <span className="text-xs text-gray-700">{category.label}</span>
             </div>

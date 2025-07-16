@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
 import axios from 'axios';
+import Select from 'react-select';
+import api from '../../api/api';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { formatPrice } from '../../utils/priceUtil';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
@@ -12,7 +13,7 @@ import Footer from '../../components/footer/Footer';
 const customSelectStyles = {
   control: (provided, state) => ({
     ...provided,
-    borderColor: state.isFocused ? '#f97316' : '#d1d5db', // orange border on focus, gray otherwise
+    borderColor: state.isFocused ? '#f97316' : '#d1d5db',
     boxShadow: state.isFocused ? '0 0 0 1px #f97316' : 'none',
     '&:hover': {
       borderColor: '#f97316',
@@ -33,7 +34,7 @@ const customSelectStyles = {
   menu: provided => ({
     ...provided,
     maxHeight: '200px', // limit dropdown height
-    overflowY: 'auto',
+    // overflowY: 'auto',
   }),
   placeholder: provided => ({
     ...provided,
@@ -46,17 +47,6 @@ const customSelectStyles = {
   }),
 };
 
-// Function to remove Vietnamese diacritics from a string
-// const normalizeString = str => {
-//   if (!str) return '';
-//   return str
-//     .normalize('NFD')
-//     .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-//     .replace(/đ/g, 'd')
-//     .replace(/Đ/g, 'D')
-//     .toLowerCase();
-// };
-
 const Order = () => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -64,6 +54,95 @@ const Order = () => {
   const [orderItems, setOrderItems] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [placedOrderDetails, setPlacedOrderDetails] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [discountCodes, setDiscountCodes] = useState([]); // new state for multiple discount codes
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [cartTotal, setCartTotal] = useState(0);
+  const [applyCouponValid, setApplyCouponValid] = useState(false);
+  
+  const navigate = useNavigate();
+
+  // New state to track original total (subtotal + shipping fee) before discount
+  const [originalTotal, setOriginalTotal] = useState(0);
+
+  // Function to apply coupon by calling backend API
+  const applyCoupon = async () => {
+    if (!couponCode) {
+      alert('Vui lòng nhập mã giảm giá');
+      return;
+    }
+
+    // Add new coupon code to discountCodes array if not already present
+    let newDiscountCodes = [...discountCodes];
+    if (!newDiscountCodes.includes(couponCode.trim())) {
+      newDiscountCodes.push(couponCode.trim());
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3001/api/discounts/apply-multiple', // assume new endpoint for multiple codes
+        {
+          codes: newDiscountCodes,
+          cart_total: originalTotal,
+          shippingMethod: shippingMethod,
+        }
+      );
+
+      console.log('Coupon response:', response.data);
+      if (response.data.valid) {
+        setCartTotal(response.data.new_total);
+        setApplyCouponValid(true);
+        setDiscountCodes(newDiscountCodes);
+        // Removed calls to undefined setters
+        // setDiscountAmount(response.data.discount_amount || 0);
+        // setFreeShipMessage(
+        //   newDiscountCodes.includes('freeship') ? 'Miễn phí vận chuyển' : ''
+        // );
+        alert(response.data.message);
+      } else {
+        setCartTotal(originalTotal);
+        setApplyCouponValid(false);
+        // setDiscountAmount(0);
+        // setFreeShipMessage('');
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      alert('Lỗi khi áp dụng mã giảm giá. Vui lòng thử lại.');
+      setCartTotal(originalTotal);
+      setApplyCouponValid(false);
+      // setDiscountAmount(0);
+      // setFreeShipMessage('');
+    }
+  };
+
+  console.log(
+    'Order component rendered',
+    orderItems,
+    totalPrice,
+    originalTotal
+  );
+
+  console.log('cartTotal', cartTotal);
+
+  // Add shippingMethod state to track changes outside Formik render
+  const [shippingMethod, setShippingMethod] = useState('');
+
+  useEffect(() => {
+    const subtotal = orderItems.reduce(
+      (sum, item) => sum + parsePrice(item.price) * item.quantity,
+      0
+    );
+    const shippingFee =
+      orderItems.length === 0 || !shippingMethod
+        ? 0
+        : shippingMethod === 'delivery'
+        ? 40000
+        : 0;
+    const total = subtotal + shippingFee;
+    setTotalPrice(total);
+    setOriginalTotal(total); // update original total whenever subtotal or shipping changes
+  }, [orderItems, shippingMethod]);
 
   // Helper function to parse price string and extract numeric value
   const parsePrice = priceStr => {
@@ -80,11 +159,6 @@ const Order = () => {
     return 0; // fallback if invalid
   };
 
-  /**
-   * Load the "order" array from localStorage on component mount.
-   * This array contains the products transferred from the cart page.
-   * The orderItems state is set with this data to display the products in the order page.
-   */
   useEffect(() => {
     const storedCartItems = localStorage.getItem('cartItems');
 
@@ -102,17 +176,16 @@ const Order = () => {
 
   // Fetch provinces on mount
   useEffect(() => {
-    axios
-      .get('https://api.vnappmob.com/api/v2/province/')
-      .then(res => {
-        if (res && res.data && res.data.results) {
-          const provinceOptions = res.data.results.map(p => ({
+    api.location
+      .fetchProvinces()
+      .then(results => {
+        if (results) {
+          const provinceOptions = results.map(p => ({
             label: p.province_name,
             value: p.province_id,
           }));
           setProvinces(provinceOptions);
         } else {
-          console.error('Unexpected provinces API response:', res);
           setProvinces([]);
         }
       })
@@ -122,27 +195,24 @@ const Order = () => {
       });
   }, []);
 
-  // Fetch districts when province changes
   const fetchDistricts = provinceId => {
     if (provinceId) {
-      axios
-        .get(`https://api.vnappmob.com/api/v2/province/district/${provinceId}`)
-        .then(res => {
-          if (res && res.data && res.data.results) {
-            const districtOptions = res.data.results.map(d => ({
+      api.location
+        .fetchDistricts(provinceId)
+        .then(results => {
+          if (results) {
+            const districtOptions = results.map(d => ({
               label: d.district_name,
               value: d.district_id,
             }));
             setDistricts(districtOptions);
             setWards([]);
           } else {
-            console.error('Unexpected districts API response:', res);
             setDistricts([]);
             setWards([]);
           }
         })
-        .catch(error => {
-          console.error('Error fetching districts:', error);
+        .catch(() => {
           setDistricts([]);
           setWards([]);
         });
@@ -152,26 +222,22 @@ const Order = () => {
     }
   };
 
-  // Fetch wards when district changes
   const fetchWards = districtId => {
     if (districtId) {
-      axios
-        // .get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`)
-        .get(`https://api.vnappmob.com/api/v2/province/ward/${districtId}`)
-        .then(res => {
-          if (res && res.data && res.data.results) {
-            const wardOptions = res.data.results.map(w => ({
+      api.location
+        .fetchWards(districtId)
+        .then(results => {
+          if (results) {
+            const wardOptions = results.map(w => ({
               label: w.ward_name,
               value: w.ward_id,
             }));
             setWards(wardOptions);
           } else {
-            console.error('Unexpected wards API response:', res);
             setWards([]);
           }
         })
-        .catch(error => {
-          console.error('Error fetching wards:', error);
+        .catch(() => {
           setWards([]);
         });
     } else {
@@ -237,33 +303,44 @@ const Order = () => {
               const response = await axios.post(
                 'http://localhost:3001/api/order',
                 {
-                  customerInfo: values,
+                  customerInfo: {
+                    ...values,
+                    discountCodes: discountCodes, // send discount codes array to backend
+                  },
                   items: orderItems,
                 }
               );
 
-              if (response.status === 200 || response.status === 201) {
-                setPlacedOrderDetails({
-                  customerInfo: values,
-                  items: orderItems,
-                  subtotal: orderItems.reduce(
+                if (response.status === 200 || response.status === 201) {
+                  const subtotal = orderItems.reduce(
                     (sum, item) => sum + parsePrice(item.price) * item.quantity,
                     0
-                  ),
-                  shippingFee:
+                  );
+                  const shippingFee =
                     orderItems.length > 0 && values.shippingMethod === 'pickup'
                       ? 0
-                      : 40000,
-                });
-                setOrderPlaced(true);
-                localStorage.removeItem('order');
-                localStorage.setItem('cartItems', '[]');
-                window.dispatchEvent(new Event('cartUpdated'));
-                alert('Đặt hàng thành công.');
-                setOrderItems([]);
-              } else {
-                alert('Đặt hàng thất bại. Vui lòng thử lại.');
-              }
+                      : 40000;
+                  const totalPriceToSet = applyCouponValid
+                    ? cartTotal
+                    : subtotal + shippingFee;
+
+                  setPlacedOrderDetails({
+                    customerInfo: values,
+                    items: orderItems,
+                    subtotal: subtotal,
+                    shippingFee: shippingFee,
+                    totalPrice: totalPriceToSet,
+                  });
+                  setOrderPlaced(true);
+                  localStorage.removeItem('order');
+                  localStorage.setItem('cartItems', '[]');
+                  window.dispatchEvent(new Event('cartUpdated'));
+                  navigate('/my-orders', { state: { values } }); // Redirect to My Orders page after successful order placement
+                  alert('Đặt hàng thành công.');
+                  setOrderItems([]);
+                } else {
+                  alert('Đặt hàng thất bại. Vui lòng thử lại.');
+                }
             } catch (error) {
               console.error('Error placing order:', error);
               alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
@@ -314,6 +391,9 @@ const Order = () => {
             const handleWardChange = selectedOption => {
               setFieldValue('ward', selectedOption);
             };
+
+            // Track shippingMethod changes to update shippingMethod state
+            // (Moved useEffect outside Formik render)
 
             return (
               <Form>
@@ -567,9 +647,10 @@ const Order = () => {
                               name="shippingMethod"
                               value="delivery"
                               checked={values.shippingMethod === 'delivery'}
-                              onChange={e =>
-                                setFieldValue('shippingMethod', e.target.value)
-                              }
+                              onChange={e => {
+                                setFieldValue('shippingMethod', e.target.value);
+                                setShippingMethod(e.target.value);
+                              }}
                               className="mr-2"
                             />
                             <span>Giao hàng tận nơi</span>
@@ -583,9 +664,10 @@ const Order = () => {
                               name="shippingMethod"
                               value="pickup"
                               checked={values.shippingMethod === 'pickup'}
-                              onChange={e =>
-                                setFieldValue('shippingMethod', e.target.value)
-                              }
+                              onChange={e => {
+                                setFieldValue('shippingMethod', e.target.value);
+                                setShippingMethod(e.target.value);
+                              }}
                               className="mr-2"
                             />
                             <span>Nhận tại cửa hàng</span>
@@ -749,10 +831,7 @@ const Order = () => {
                         </p>
                         <p className="font-semibold">
                           Tổng cộng:{' '}
-                          {(
-                            placedOrderDetails.subtotal +
-                            placedOrderDetails.shippingFee
-                          ).toLocaleString('vi-VN')}
+                          {(placedOrderDetails.totalPrice ?? (placedOrderDetails.subtotal + placedOrderDetails.shippingFee)).toLocaleString('vi-VN')}
                           ₫
                         </p>
                       </div>
@@ -780,7 +859,7 @@ const Order = () => {
                                   </div>
                                 </div>
                                 <div className="flex-1">
-                                  <p className="text-sm font-semibold">
+                                  <p className="text-sm font-semibold line-clamp-3">
                                     {item.description || item.title}
                                   </p>
                                   <p className="text-xs text-gray-500">
@@ -802,35 +881,60 @@ const Order = () => {
                             name="discountCode"
                             placeholder="Nhập mã giảm giá"
                             className={`flex-grow border rounded px-3 py-2 text-sm `}
+                            value={couponCode}
+                            onChange={e => {
+                              setCouponCode(e.target.value);
+                              setApplyCouponValid(false);
+                              setCartTotal(0);
+                              setTotalPrice(originalTotal); // reset totalPrice to original total on discount code change
+                            }}
                           />
                           <button
                             type="button"
                             className="bg-orange-400 text-white rounded px-4 py-2 text-sm font-semibold"
-                            onClick={() =>
-                              alert('Áp dụng mã giảm giá chưa được triển khai')
-                            }
+                            onClick={applyCoupon}
+                            // disabled={isSubmitting || !values.discountCode}
                           >
                             Áp dụng
                           </button>
                         </div>
-                        <div className="text-sm mb-1 flex justify-between">
-                          <span>Tạm tính</span>
-                          <span>{subtotal.toLocaleString('vi-VN')}₫</span>
-                        </div>
-                        <div className="text-sm mb-1 flex justify-between">
-                          <span>Phí vận chuyển</span>
-                          <span>
-                            {(orderPlaced && placedOrderDetails
-                              ? placedOrderDetails.shippingFee
-                              : shippingFee
-                            ).toLocaleString('vi-VN')}
-                            ₫
+                        <div className="text-sm mb-1 border-b border-gray-300 pb-1 flex flex-col gap-1">
+                          <span className="flex justify-between">
+                            <span>Tạm tính:</span>
+                            <span className="font-semibold">
+                              {(orderPlaced && placedOrderDetails
+                                ? placedOrderDetails.subtotal
+                                : total -
+                                  (values.shippingMethod === 'delivery'
+                                    ? 40000
+                                    : 0)
+                              ).toLocaleString('vi-VN')}
+                              ₫
+                            </span>
+                          </span>
+                          <span className="flex justify-between">
+                            <span>Phí vận chuyển:</span>
+                            <span className="font-semibold">
+                              {(orderPlaced && placedOrderDetails
+                                ? placedOrderDetails.shippingFee
+                                : values.shippingMethod === 'delivery'
+                                ? 40000
+                                : 0
+                              ).toLocaleString('vi-VN')}
+                              ₫
+                            </span>
                           </span>
                         </div>
                         <div className="text-lg font-semibold flex justify-between border-t pt-2">
                           <span>Tổng cộng</span>
                           <span className="text-orange-500">
-                            {total.toLocaleString('vi-VN')}₫
+                            {
+                              // total.toLocaleString('vi-VN') || cartTotal
+                              !applyCouponValid
+                                ? total.toLocaleString('vi-VN')
+                                : cartTotal.toLocaleString('vi-VN')
+                            }
+                            ₫
                           </span>
                         </div>
                         <div className="flex items-center justify-between mt-5">

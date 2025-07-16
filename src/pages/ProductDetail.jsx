@@ -14,7 +14,10 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(location.state?.quantity || 1);
   const [selectedBox, setSelectedBox] = useState(null);
   const [tooltipVisible, setTooltipVisible] = useState(null);
+
   const API_URL = 'http://localhost:3001';
+
+  const [discounts, setDiscounts] = useState([]);
 
   useEffect(() => {
     if (product) {
@@ -37,13 +40,47 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [id, product]);
 
+  console.log('ProductDetail component rendered with product:', product);
+
+  useEffect(() => {
+    if (!product) return;
+
+    const fetchDiscounts = async () => {
+      try {
+        const url = `${API_URL}/api/discounts/product/${product.id}`;
+        console.log('Fetching discounts from:', url);
+        const res = await fetch(url);
+        console.log('Response status:', res.status);
+        if (!res.ok) {
+          throw new Error('Failed to fetch discounts');
+        }
+        const data = await res.json();
+        console.log('Fetched discounts data:', data);
+        setDiscounts(data);
+      } catch (error) {
+        console.error('Failed to fetch discounts:', error);
+      }
+    };
+
+    fetchDiscounts();
+  }, [product]);
+
   const handleBuyNow = () => {
+    if (product.classifications && product.classifications.length > 0 && !selectedBox) {
+      alert('Vui lòng chọn phân loại trước khi mua hàng.');
+      return;
+    }
     if (product) {
-      addItem(product, quantity);
+      const productWithClassification = {
+        ...product,
+        selectedClassification: selectedBox,
+      };
+      addItem(productWithClassification, quantity);
       navigate('/order', {
         state: {
           productId: product.id,
           productTitle: product.description || product.title,
+          selectedClassification: selectedBox,
         },
       });
     }
@@ -51,14 +88,24 @@ const ProductDetail = () => {
 
   const addToCart = () => {
     if (!product) return;
+    if (product.classifications && product.classifications.length > 0 && !selectedBox) {
+      alert('Vui lòng chọn phân loại trước khi thêm vào giỏ hàng.');
+      return;
+    }
 
     console.log(
       'addToCart called with product id:',
       product.id,
       'quantity:',
-      quantity
+      quantity,
+      'selected classification:',
+      selectedBox
     );
-    addItem(product, quantity);
+    const productWithClassification = {
+      ...product,
+      selectedClassification: selectedBox,
+    };
+    addItem(productWithClassification, quantity);
     // Removed redundant event dispatch here since it's done inside addItem now
     setQuantity(1);
   };
@@ -188,112 +235,98 @@ const ProductDetail = () => {
             <div className="mb-4">
               <div className="flex space-x-2 items-center relative z-50">
                 <span className="font-semibold">Mã giảm giá: </span>
-                {[
-                  {
-                    code: 'GIAM50',
-                    label: 'Giảm 50%',
-                    description: 'Giảm 50% cho đơn hàng giá trị tối thiểu 500K',
-                  },
-                  {
-                    code: 'GIAM15',
-                    label: 'Giảm 15%',
-                    description: 'Giảm 15% cho đơn hàng giá trị tối thiểu 500K',
-                  },
-                  {
-                    code: 'ND10K',
-                    label: 'Giảm 10k',
-                    description: 'Nhập mã ND10k giảm ngay 10k',
-                  },
-                  {
-                    code: 'TANG500K',
-                    label: 'Tặng 500k',
-                    description: 'Tặng phiếu mua hàng khi mua từ 500k',
-                  },
-                ].map(discount => (
-                  <div
-                    key={discount.code}
-                    className="relative"
-                    onMouseEnter={() => setTooltipVisible(discount.code)}
-                    onMouseLeave={() => setTooltipVisible(null)}
-                  >
-                    <button
-                      className="border border-orange-400 text-orange-400 rounded px-2 py-1 hover:bg-orange-100 transition"
-                      onClick={() => {
-                        navigator.clipboard.writeText(discount.code);
-                        localStorage.setItem(
-                          'lastCopiedDiscountCode',
-                          discount.code
-                        );
-                        alert(`Đã sao chép mã: ${discount.code}`);
-                      }}
-                      aria-describedby={`tooltip-${discount.code}`}
+                {discounts.length === 0 ? (
+                  <span className="text-gray-500">Không có mã giảm giá</span>
+                ) : (
+                  discounts.map(discount => (
+                    <div
+                      key={discount.code}
+                      className="relative"
+                      onMouseEnter={() => setTooltipVisible(discount.code)}
+                      onMouseLeave={() => setTooltipVisible(null)}
                     >
-                      {discount.label}
-                    </button>
-                    {tooltipVisible === discount.code && (
-                      <div
-                        id={`tooltip-${discount.code}`}
-                        className="absolute top-full left-0 mt-1 w-48 p-2 bg-white border border-gray-300 rounded shadow-lg z-50 text-xs text-gray-700"
-                        onMouseEnter={() => setTooltipVisible(discount.code)}
-                        onMouseLeave={() => setTooltipVisible(null)}
+                      <button
+                        className="border border-orange-400 text-orange-400 rounded px-2 py-1 hover:bg-orange-100 transition"
+                        onClick={() => {
+                          navigator.clipboard.writeText(discount.code);
+                          localStorage.setItem(
+                            'lastCopiedDiscountCode',
+                            discount.code
+                          );
+                          alert(`Đã sao chép mã: ${discount.code}`);
+                        }}
+                        aria-describedby={`tooltip-${discount.code}`}
                       >
-                        <div className="absolute -top-2 left-4 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-white"></div>
-                        <div className="absolute h-2 w-14 -top-2 left-7 bg-transparent"></div>
-                        <div className="flex justify-between items-center">
-                          <span className="flex-2">{discount.description}</span>
-                          <button
-                            className="ml-2 bg-orange-500 text-white text-xs px-2 py-1 rounded hover:bg-orange-600 transition flex-1"
-                            onClick={e => {
-                              e.stopPropagation();
-                              navigator.clipboard.writeText(discount.code);
-                              localStorage.setItem(
-                                'lastCopiedDiscountCode',
-                                discount.code
-                              );
-                              alert(`Đã sao chép mã: ${discount.code}`);
-                            }}
-                          >
-                            Sao chép mã
-                          </button>
+                        {discount.name}
+                      </button>
+                      {tooltipVisible === discount.code && (
+                        <div
+                          id={`tooltip-${discount.code}`}
+                          className="absolute top-full left-0 mt-1 w-48 p-2 bg-white border border-gray-300 rounded shadow-lg z-50 text-xs text-gray-700"
+                          onMouseEnter={() => setTooltipVisible(discount.code)}
+                          onMouseLeave={() => setTooltipVisible(null)}
+                        >
+                          <div className="absolute -top-2 left-4 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-8 border-b-white"></div>
+                          <div className="absolute h-2 w-14 -top-2 left-7 bg-transparent"></div>
+                          <div className="flex justify-between items-center">
+                            <span className="flex-2">
+                              {discount.description}
+                            </span>
+                            <button
+                              className="ml-2 bg-orange-500 text-white text-xs px-2 py-1 rounded hover:bg-orange-600 transition flex-1"
+                              onClick={e => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(discount.code);
+                                localStorage.setItem(
+                                  'lastCopiedDiscountCode',
+                                  discount.code
+                                );
+                                alert(`Đã sao chép mã: ${discount.code}`);
+                              }}
+                            >
+                              Sao chép mã
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
-            <div className="mb-4">
-              <span className="font-semibold mr-2">Thùng: </span>
-              <button
-                className={`border rounded px-3 py-1 mr-2 hover:bg-gray-100 transition ${
-                  selectedBox === 'Thùng 4 bịch'
-                    ? 'border-green-600 bg-green-200'
-                    : 'border-gray-200'
-                }`}
-                onClick={() => setSelectedBox('Thùng 4 bịch')}
-              >
-                Thùng 4 bịch
-              </button>
-              <button
-                className={`border rounded px-3 py-1 mr-2 hover:bg-gray-100 transition ${
-                  selectedBox === 'Thùng 6 bịch'
-                    ? 'border-green-600 bg-green-200'
-                    : 'border-gray-200'
-                }`}
-                onClick={() => setSelectedBox('Thùng 6 bịch')}
-              >
-                Thùng 6 bịch
-              </button>
-              <button
-                className={`border rounded px-3 py-1 mr-2 hover:bg-gray-100 transition ${
-                  selectedBox === 'Thùng 8 bịch'
-                    ? 'border-green-600 bg-green-200'
-                    : 'border-gray-200'
-                }`}
-                onClick={() => setSelectedBox('Thùng 8 bịch')}
-              >
-                Thùng 8 bịch
-              </button>
+            <div className="mb-4 flex items-center space-x-2">
+              <div className="font-semibold mr-2 w-[160px]">Phân loại: </div>
+              <div className='flex flex-wrap'>
+                {product.classifications &&
+                product.classifications.length > 0 ? (
+                  product.classifications.map((classification, index) => (
+                    <button
+                      key={index}
+                      className={`border rounded px-3 py-1 mr-2 hover:bg-gray-100 transition ${
+                        selectedBox === classification.label
+                          ? 'border-green-600 bg-green-200'
+                          : 'border-gray-200'
+                      } flex items-center space-x-2`}
+                      onClick={() => setSelectedBox(classification.label)}
+                    >
+                      {classification.imageUrl && (
+                        <img
+                          src={classification.imageUrl}
+                          alt={classification.label}
+                          className="w-7 h-7 object-contain"
+                        />
+                      )}
+                      <span>{classification.label}</span>
+                    </button>
+                  ))
+                ) : (
+                  <>
+                    <h3 className="text-sm text-gray-600">
+                      Chưa có thông tin loại.
+                    </h3>
+                  </>
+                )}
+              </div>
             </div>
             <div className="mb-6 flex items-center space-x-4">
               <span className="font-semibold">Số lượng: </span>

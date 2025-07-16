@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CartContext from '../context/CartContext';
 
 import Header from '../components/header/Header';
@@ -11,12 +11,22 @@ import ProductCard from '../components/product/ProductCard';
 import { formatPrice } from '../utils/priceUtil';
 
 const categories = [
-  { id: 1, name: 'Giấy ăn 3 màu' },
-  { id: 2, name: 'Giấy ăn đa sắc' },
-  { id: 3, name: 'Giấy ăn sắc hạ' },
-  { id: 4, name: 'Giấy ăn gấu trúc' },
-  { id: 5, name: 'Giấy ăn cao cấp' },
-  { id: 6, name: 'Khăn giấy hộp' },
+  { id: 1, name: 'Giấy cuộn', slug: 'giay-cuon' },
+  {
+    id: 2,
+    name: 'Khăn giấy ướt',
+    slug: 'khan-giay-uot',
+  },
+  {
+    id: 3,
+    name: 'Khăn giấy rút treo tường',
+    slug: 'khan-giay-rut-treo-tuong',
+  },
+  {
+    id: 4,
+    name: 'Khăn giấy rút',
+    slug: 'khan-giay-rut',
+  },
 ];
 
 const sortOptions = [
@@ -35,7 +45,7 @@ const priceRanges = [
 ];
 
 const ProductPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState(0); // Default to "Khăn giấy"
+  const [selectedCategory, setSelectedCategory] = useState(0); // Default to no category selected
   const [selectedSort, setSelectedSort] = useState('default');
   const [selectedPriceRange, setSelectedPriceRange] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -43,6 +53,22 @@ const ProductPage = () => {
   const [products, setProducts] = useState([]);
   const { addItem } = useContext(CartContext);
   const navigate = useNavigate();
+
+  const { category } = useParams();
+
+  useEffect(() => {
+    // Map category slug from URL to category id
+    if (category) {
+      const categoryObj = categories.find(c => c.slug === category);
+      if (categoryObj) {
+        setSelectedCategory(categoryObj.id);
+      } else {
+        setSelectedCategory(0); // No category matched
+      }
+    } else {
+      setSelectedCategory(0);
+    }
+  }, [category]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -142,8 +168,7 @@ const ProductPage = () => {
     <>
       <Header />
 
-      {/* <div className="pt-[40px] p-5 bg-[#e6ecf5] min-h-[600px] font-sans pl-20 pr-20"> */}
-      <div className="p-5 bg-[#e6ecf5] min-h-[600px] font-sans pl-10 md:pl-20 lg:pl-20 pr-10 md:pr-20 lg:pr-20">
+      <div className="p-2 bg-[#e6ecf5] min-h-[600px] font-sans pl-10 md:pl-20 lg:pl-20 pr-10 md:pr-20 lg:pr-20">
         <nav className="text-sm text-gray-500 mb-5">
           <a href="/" className="hover:underline">
             Trang chủ
@@ -154,8 +179,8 @@ const ProductPage = () => {
           </span>
         </nav>
 
-        <div className="flex flex-col md:flex-row md:space-x-6">
-          <div className="w-full md:w-100">
+        <div className="flex flex-col md:flex-row md:space-x-6 w-full">
+          <div className="w-[100%] md:w-[30%] lg:w-[20%] mb-6 md:mb-0">
             <Sidebar
               categories={categories}
               selectedCategory={selectedCategory}
@@ -170,7 +195,7 @@ const ProductPage = () => {
           </div>
 
           {/* Main content area */}
-          <div className="flex-grow w-full">
+          <div className="flex-grow w-[100%] md:w-[70%] lg:w-[80%]">
             <h2 className="text-xl font-bold mb-4 text-gray-900">
               {categories
                 .find(c => c.id === selectedCategory)
@@ -232,8 +257,8 @@ const ProductPage = () => {
                 />
               </div>
             </div>
-            <div className="flex-grow w-full md:w-1/2">
-              <h3 className="text-xl font-semibold mb-2">
+            <div className="flex-grow w-full md:w-1/2 pr-2">
+              <h3 className="truncate text-xl font-semibold mb-2">
                 {selectedProduct.description}
               </h3>
               <div className="flex justify-between mb-2">

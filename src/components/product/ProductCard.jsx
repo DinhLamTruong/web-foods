@@ -12,7 +12,7 @@ const ProductCard = ({ product, onClick }) => {
         alt={product?.description}
         className="rounded-lg mb-2 min-h-[200px] object-cover"
       />
-      <p className="text-sm text-gray-800 mb-auto line-clamp-3">
+      <p className="text-sm text-gray-800 mb-auto line-clamp-2">
         {product?.description}
       </p>
       <div className="flex justify-between items-center mt-3">

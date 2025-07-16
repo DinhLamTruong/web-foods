@@ -15,7 +15,7 @@ const Modal = ({ isOpen, onClose, children }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-3xl font-bold"
+            className="absolute top-0 right-2 text-gray-600 hover:text-gray-900 text-3xl font-bold"
             onClick={onClose}
             aria-label="Close modal"
           >

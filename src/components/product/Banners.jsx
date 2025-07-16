@@ -6,7 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 const Banners = () => {
   const settings = {
     dots: true,
-    infinite: true,
+    // infinite: true,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
@@ -18,11 +18,19 @@ const Banners = () => {
     edgeFriction: 0.15,
     responsive: [
       {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          // infinite: true,
+        },
+      },
+      {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 3,
           slidesToScroll: 1,
-          infinite: true,
+          // infinite: true,
         },
       },
     ],
@@ -30,23 +38,27 @@ const Banners = () => {
 
   const images = [
     {
-      src: 'https://khangiaysukimoko.com/img/More/header_img.png',
+      src: 'https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6jelbnfnqd4b0.webp',
       alt: 'Free Ship Toàn Quốc',
     },
     {
-      src: 'https://khangiaysukimoko.com/img/More/header_img.png',
+      src: 'https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6qeme5dh9k131.webp',
       alt: 'Voucher Cực Chất',
     },
     {
-      src: 'https://khangiaysukimoko.com/img/More/header_img.png',
+      src: 'https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6qeme5dio4hcd.webp',
       alt: 'Siêu Sale Mừng Đại Lễ',
     },
   ];
 
   return (
     <>
+      {/* max-w-[320px] md:max-w-[320px] lg:max-w-full */}
       {/* Slider visible on all screen sizes */}
-      <div className="block mb-6 w-full max-w-[1440px] overflow-hidden pb-10" style={{ maxHeight: '300px' }}>
+      <div
+        className="block w-full overflow-hidden pb-6"
+        style={{ maxHeight: 'none' }}
+      >
         <div className="relative">
           <Slider
             {...settings}
@@ -62,16 +74,21 @@ const Banners = () => {
                   zIndex: 10,
                 }}
               >
-                <ul style={{ margin: 0, padding: 0, display: 'flex', gap: '8px' }}> {dots} </ul>
+                <ul
+                  style={{ margin: 0, padding: 0, display: 'flex', gap: '8px' }}
+                >
+                  {' '}
+                  {dots}{' '}
+                </ul>
               </div>
             )}
           >
             {images.map((image, index) => (
-              <div key={index} className="px-1 md:px-2 sm:px-0">
+              <div key={index} className="px-1 md:px-1 lg:px-2">
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="rounded-lg w-full object-cover h-24 md:h-40 lg:h-50"
+                  className="rounded-lg object-cover h-20 md:h-30 lg:h-50 w-full"
                 />
               </div>
             ))}
