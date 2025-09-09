@@ -5,7 +5,7 @@ services:
     ports:
       - "8030:80"
     volumes:
-      - /home/sukimoko/admin/.env:/usr/src/app/.env
+      - /home/sukimoko/web-client/.env.prod:/usr/src/app/.env
     deploy:
          mode: replicated
          placement:
