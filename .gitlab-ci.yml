@@ -1,0 +1,50 @@
+stages:
+  - development
+  - production
+build-development:
+  stage: development
+  only:        
+   - develop
+  tags:
+   - development
+  variables:
+    DOCKER_IMAGE_TAG: $CI_JOB_TOKEN
+    DOCKER_IMAGE_NAME: lamnh/sukimoko-webclient-dev
+    DOCKER_CONTAINER_NAME: sukimoko-webclient-dev
+    DOCKER_CI_JOB_TOKEN: $CI_JOB_TOKEN
+    DOCKER_CONTAINER_PORT_EXPOSE: 8030
+    DOCKER_CONTAINER_PORT_LISTEN: 80
+
+  before_script:
+    - cat /home/gitlab-runner/.password.txt | docker login --username lamnh --password-stdin
+  script:
+    - chmod u+x ./deploy/dev/build.sh
+    - ./deploy/dev/build.sh
+    - docker push lamnh/sukimoko-webclient-dev:${CI_JOB_TOKEN}
+    - chmod u+x ./deploy/dev/run.sh
+    - ./deploy/dev/run.sh
+build-production:
+  stage: production
+  only:
+    - tags
+  tags:
+    - production
+  when:
+    manual
+  variables:
+    DOCKER_IMAGE_TAG: $CI_JOB_TOKEN
+    DOCKER_IMAGE_NAME: lamnh/sukimoko-webclient-prod
+    DOCKER_CONTAINER_NAME: sukimoko-webclient-prod
+    DOCKER_CI_JOB_TOKEN: $CI_JOB_TOKEN
+    DOCKER_CONTAINER_PORT_EXPOSE: 8040
+    DOCKER_CONTAINER_PORT_LISTEN: 80
+
+  before_script:
+    - cat /home/gitlab-runner/.password.txt | docker login --username lamnh --password-stdin
+  script:
+    - chmod u+x ./deploy/prod/build.sh
+    - ./deploy/prod/build.sh
+    - docker push lamnh/sukimoko-webclient-prod:${CI_JOB_TOKEN}
+    - chmod u+x ./deploy/prod/run.sh
+    - ./deploy/prod/run.sh
+

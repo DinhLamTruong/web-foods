@@ -6,6 +6,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { formatPrice } from '../../utils/priceUtil';
 import { NavLink, useNavigate } from 'react-router-dom';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
@@ -80,7 +81,7 @@ const Order = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/discounts/apply-multiple', // assume new endpoint for multiple codes
+        `${API_BASE_URL}/discounts/apply-multiple`, // assume new endpoint for multiple codes
         {
           codes: newDiscountCodes,
           cart_total: originalTotal,
@@ -301,7 +302,7 @@ const Order = () => {
             try {
               // Call API to place order
               const response = await axios.post(
-                'http://localhost:3001/api/order',
+                `${API_BASE_URL}/api/order`,
                 {
                   customerInfo: {
                     ...values,

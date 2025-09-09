@@ -10,6 +10,8 @@ import Banners from '../components/product/Banners';
 import ProductCard from '../components/product/ProductCard';
 import { formatPrice } from '../utils/priceUtil';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 const categories = [
   { id: 1, name: 'Giấy cuộn', slug: 'giay-cuon' },
   {
@@ -84,7 +86,7 @@ const ProductPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/product');
+      const response = await fetch(`${API_BASE_URL}/product`);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
@@ -258,7 +260,10 @@ const ProductPage = () => {
               </div>
             </div>
             <div className="flex-grow w-full md:w-1/2 pr-2">
-              <h3 className="truncate text-xl font-semibold mb-2">
+              <h3
+                className="line-clamp-2 text-xl font-semibold mb-2"
+                title={selectedProduct.description}
+              >
                 {selectedProduct.description}
               </h3>
               <div className="flex justify-between mb-2">

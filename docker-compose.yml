@@ -1,0 +1,18 @@
+version: "3"
+services:
+  sukimoko-webclient-dev:
+    image: '${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
+    ports:
+      - "8030:80"
+    deploy:
+         mode: replicated
+         placement:
+            constraints: [node.role == manager]
+         replicas: 1
+         update_config:
+            parallelism: 1
+            delay: 10s
+         restart_policy:
+            condition: any
+
+

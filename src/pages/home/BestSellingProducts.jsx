@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 // import CartContext from '../../context/CartContext';
 import { formatPrice } from '../../utils/priceUtil';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 const BestSellingProducts = () => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
@@ -13,7 +15,7 @@ const BestSellingProducts = () => {
     // Fetch all products from API and filter best selling locally if showAllProducts is false
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/product');
+        const response = await fetch(`${API_BASE_URL}/product`);
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }

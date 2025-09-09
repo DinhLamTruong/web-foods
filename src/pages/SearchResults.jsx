@@ -5,6 +5,7 @@ import Footer from '../components/footer/Footer';
 import Modal from '../components/common/Modal';
 import CartContext from '../context/CartContext';
 import { formatPrice } from '../utils/priceUtil';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const SearchResults = () => {
   const location = useLocation();
@@ -25,7 +26,7 @@ const SearchResults = () => {
       setError(null);
       try {
         const response = await fetch(
-          `http://localhost:3001/api/search/products?q=${encodeURIComponent(
+          `${API_BASE_URL}/search/products?q=${encodeURIComponent(
             searchQuery
           )}`
         );

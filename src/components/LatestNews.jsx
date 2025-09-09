@@ -6,12 +6,12 @@ const LatestNews = () => {
   const [sideNews, setSideNews] = useState([]);
   const [tipsNews, setTipsNews] = useState([]);
 
-  const API_URL = 'http://localhost:3001';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await fetch(API_URL + '/api/news');
+        const res = await fetch(API_URL + '/news');
         const data = await res.json();
 
         if (data.length > 0) {
@@ -25,7 +25,7 @@ const LatestNews = () => {
     };
 
     fetchNews();
-  }, []);
+  }, [API_URL]);
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-sm m-auto mt-4">
@@ -41,7 +41,9 @@ const LatestNews = () => {
                 className="w-full h-64 object-cover rounded-md mb-4"
               />
               <h3 className="font-bold text-base mb-2">{featuredNews.title}</h3>
-              <p className="text-sm text-gray-700">{featuredNews.description}</p>
+              <p className="text-sm text-gray-700">
+                {featuredNews.description}
+              </p>
             </Link>
           )}
         </div>

@@ -15,7 +15,7 @@ const ProductDetail = () => {
   const [selectedBox, setSelectedBox] = useState(null);
   const [tooltipVisible, setTooltipVisible] = useState(null);
 
-  const API_URL = 'http://localhost:3001';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   const [discounts, setDiscounts] = useState([]);
 
@@ -38,7 +38,7 @@ const ProductDetail = () => {
     };
 
     fetchProductDetail();
-  }, [id, product]);
+  }, [id, product,API_URL]);
 
   console.log('ProductDetail component rendered with product:', product);
 
@@ -63,7 +63,7 @@ const ProductDetail = () => {
     };
 
     fetchDiscounts();
-  }, [product]);
+  }, [product, API_URL]);
 
   const handleBuyNow = () => {
     if (product.classifications && product.classifications.length > 0 && !selectedBox) {

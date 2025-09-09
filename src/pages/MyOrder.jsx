@@ -4,6 +4,8 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 const MyOrder = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ const MyOrder = () => {
           return;
         }
         const response = await axios.get(
-          `http://localhost:3001/api/order/user?email=${encodeURIComponent(
+          `${API_BASE_URL}/order/user?email=${encodeURIComponent(
             userEmail
           )}`
         );
@@ -57,7 +59,7 @@ const MyOrder = () => {
         return;
       }
       const response = await axios.get(
-        `http://localhost:3001/api/order/${orderId}`
+        `${API_BASE_URL}/order/${orderId}`
       );
       console.log('Order details:', response.data);
       setOrderDetails(response.data);
@@ -84,33 +86,31 @@ const MyOrder = () => {
     <>
       <Header />
 
-      {orders.map(order => {
-        const {
-          id,
-          email,
-          fullName,
-          phone,
-          address,
-          district,
-          province,
-          ward,
-          note,
-          shippingMethod,
-          paymentMethod,
-          items,
-          totalPrice,
-        } = order;
+      <h2 className="text-center font-bold py-4 text-2xl">Đơn hàng của tôi</h2>
 
-        const shippingFee = shippingMethod === 'delivery' ? 40000 : 0;
-        const subtotal = totalPrice - shippingFee;
+      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 p-4">
+        {orders.map(order => {
+          const {
+            id,
+            email,
+            fullName,
+            phone,
+            address,
+            district,
+            province,
+            ward,
+            note,
+            shippingMethod,
+            paymentMethod,
+            items,
+            totalPrice,
+          } = order;
 
-        return (
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4"
-            key={id}
-          >
+          const shippingFee = shippingMethod === 'delivery' ? 40000 : 0;
+          const subtotal = totalPrice - shippingFee;
+
+          return (
             <div
-              // className="flex"
               key={id}
               style={{
                 border: '1px solid #ccc',
@@ -118,8 +118,7 @@ const MyOrder = () => {
                 margin: '20px auto',
               }}
             >
-              <div 
-              style={{ flex: 1 }}>
+              <div style={{ flex: 1 }}>
                 <h2 style={{ color: 'green' }}>
                   Đơn hàng đã được đặt thành công!
                 </h2>
@@ -260,9 +259,9 @@ const MyOrder = () => {
                 </p>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
       <Footer />
     </>

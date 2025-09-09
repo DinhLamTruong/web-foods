@@ -1,13 +1,14 @@
-/* global process */
+// /* global process */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-const API_URL =
-  typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL
-    ? process.env.REACT_APP_API_URL
-    : 'http://localhost:3001';
+// const API_URL =
+//   typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL
+//     ? process.env.REACT_APP_API_URL
+//     : 'http://localhost:3001';
 
 const News = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await fetch(API_URL + '/api/news');
+        const res = await fetch(API_URL + '/news');
         const data = await res.json();
 
         if (data.length > 0) {

@@ -4,14 +4,15 @@ import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import { MdCalendarToday } from 'react-icons/md';
 import { FaUser } from 'react-icons/fa';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-const API_URL =
-  typeof window !== 'undefined' &&
-  window.process &&
-  window.process.env &&
-  window.process.env.REACT_APP_API_URL
-    ? window.process.env.REACT_APP_API_URL
-    : 'http://localhost:3001';
+// const API_URL =
+//   typeof window !== 'undefined' &&
+//   window.process &&
+//   window.process.env &&
+//   window.process.env.REACT_APP_API_URL
+//     ? window.process.env.REACT_APP_API_URL
+//     : 'http://localhost:3001';
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -25,7 +26,7 @@ const NewsDetail = () => {
   useEffect(() => {
     const fetchNewsDetail = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/news/${id}`);
+        const res = await fetch(`${API_URL}/news/${id}`);
         if (!res.ok) {
           throw new Error('News not found');
         }

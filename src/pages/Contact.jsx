@@ -3,6 +3,7 @@ import { FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Spin } from 'antd';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
@@ -20,7 +21,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const Contact = () => {
-  const URL = 'http://localhost:3001/api/contact';
+  const URL = `${API_BASE_URL}/contact`;
   const [submitStatus, setSubmitStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
