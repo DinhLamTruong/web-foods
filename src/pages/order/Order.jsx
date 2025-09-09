@@ -60,7 +60,7 @@ const Order = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
   const [applyCouponValid, setApplyCouponValid] = useState(false);
-  
+
   const navigate = useNavigate();
 
   // New state to track original total (subtotal + shipping fee) before discount
@@ -301,47 +301,44 @@ const Order = () => {
 
             try {
               // Call API to place order
-              const response = await axios.post(
-                `${API_BASE_URL}/api/order`,
-                {
-                  customerInfo: {
-                    ...values,
-                    discountCodes: discountCodes, // send discount codes array to backend
-                  },
+              const response = await axios.post(`${API_BASE_URL}/api/order`, {
+                customerInfo: {
+                  ...values,
+                  discountCodes: discountCodes, // send discount codes array to backend
+                },
+                items: orderItems,
+              });
+
+              if (response.status === 200 || response.status === 201) {
+                const subtotal = orderItems.reduce(
+                  (sum, item) => sum + parsePrice(item.price) * item.quantity,
+                  0
+                );
+                const shippingFee =
+                  orderItems.length > 0 && values.shippingMethod === 'pickup'
+                    ? 0
+                    : 40000;
+                const totalPriceToSet = applyCouponValid
+                  ? cartTotal
+                  : subtotal + shippingFee;
+
+                setPlacedOrderDetails({
+                  customerInfo: values,
                   items: orderItems,
-                }
-              );
-
-                if (response.status === 200 || response.status === 201) {
-                  const subtotal = orderItems.reduce(
-                    (sum, item) => sum + parsePrice(item.price) * item.quantity,
-                    0
-                  );
-                  const shippingFee =
-                    orderItems.length > 0 && values.shippingMethod === 'pickup'
-                      ? 0
-                      : 40000;
-                  const totalPriceToSet = applyCouponValid
-                    ? cartTotal
-                    : subtotal + shippingFee;
-
-                  setPlacedOrderDetails({
-                    customerInfo: values,
-                    items: orderItems,
-                    subtotal: subtotal,
-                    shippingFee: shippingFee,
-                    totalPrice: totalPriceToSet,
-                  });
-                  setOrderPlaced(true);
-                  localStorage.removeItem('order');
-                  localStorage.setItem('cartItems', '[]');
-                  window.dispatchEvent(new Event('cartUpdated'));
-                  navigate('/my-orders', { state: { values } }); // Redirect to My Orders page after successful order placement
-                  alert('Đặt hàng thành công.');
-                  setOrderItems([]);
-                } else {
-                  alert('Đặt hàng thất bại. Vui lòng thử lại.');
-                }
+                  subtotal: subtotal,
+                  shippingFee: shippingFee,
+                  totalPrice: totalPriceToSet,
+                });
+                setOrderPlaced(true);
+                localStorage.removeItem('order');
+                localStorage.setItem('cartItems', '[]');
+                window.dispatchEvent(new Event('cartUpdated'));
+                navigate('/my-orders', { state: { values } }); // Redirect to My Orders page after successful order placement
+                alert('Đặt hàng thành công.');
+                setOrderItems([]);
+              } else {
+                alert('Đặt hàng thất bại. Vui lòng thử lại.');
+              }
             } catch (error) {
               console.error('Error placing order:', error);
               alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
@@ -464,11 +461,32 @@ const Order = () => {
                           className="flex items-center px-3 border-l border-gray-300 bg-white cursor-pointer"
                           aria-label="Select country code"
                         >
-                          <img
-                            src="/flags/vn.svg"
-                            alt="Vietnam flag"
-                            className="w-6 h-4 rounded-sm"
-                          />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            viewBox="0 0 48 32"
+                          >
+                            {/* Nền đỏ */}
+                            <rect width="48" height="36" fill="#da251d" />
+
+                            {/* Ngôi sao vàng căn giữa */}
+                            <polygon
+                              fill="#ff0"
+                              points="
+        24,8
+        26.35,14.9
+        33.8,14.9
+        27.2,19.1
+        29.55,26
+        24,21.6
+        18.45,26
+        20.8,19.1
+        14.2,14.9
+        21.65,14.9
+      "
+                            />
+                          </svg>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="w-4 h-4 ml-1 text-gray-600"
@@ -832,7 +850,11 @@ const Order = () => {
                         </p>
                         <p className="font-semibold">
                           Tổng cộng:{' '}
-                          {(placedOrderDetails.totalPrice ?? (placedOrderDetails.subtotal + placedOrderDetails.shippingFee)).toLocaleString('vi-VN')}
+                          {(
+                            placedOrderDetails.totalPrice ??
+                            placedOrderDetails.subtotal +
+                              placedOrderDetails.shippingFee
+                          ).toLocaleString('vi-VN')}
                           ₫
                         </p>
                       </div>
