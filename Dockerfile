@@ -1,13 +1,22 @@
-# Dockerfile
-FROM nginx:latest
+FROM node:20 as build
 
-# Copy the files from the current directory to the nginx root directory
-COPY . /usr/share/nginx/html
+RUN mkdir -p /app
+WORKDIR /app
+COPY package*.json /app/
+COPY ./ /app/
+
+COPY ./.env /app/.env
+RUN npm install
+RUN npm run build
+
+# Stage 2, based on Nginx, to have only the compiled app, ready for production with Nginx
+FROM nginx:alpine
+
+RUN mkdir -p /app
+WORKDIR /app
 
 
-# The default port of nginx is 80
+COPY --from=build /app/dist/ /app/dist
 EXPOSE 80
-
-# Run nginx in foreground mode
-CMD ["nginx", "-g", "daemon off;"]
+COPY ./nginx.conf.template /etc/nginx/conf.d/default.conf
 
