@@ -9,7 +9,7 @@ COPY package*.json /app/
 
 COPY ./ /app/ 
 
-COPY ./.env.prod /app/.env 
+COPY ./.env /app/.env 
 
 RUN npm install 
 
