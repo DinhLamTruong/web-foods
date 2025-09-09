@@ -4,6 +4,8 @@ services:
     image: '${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
     ports:
       - "8030:80"
+    volumes:
+      - /home/sukimoko/admin/.env:/usr/src/app/.env
     deploy:
          mode: replicated
          placement:
