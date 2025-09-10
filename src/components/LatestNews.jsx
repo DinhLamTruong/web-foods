@@ -67,8 +67,8 @@ const LatestNews = () => {
         </div>
 
         {/* Tips Sidebar */}
-        <div className="col-span-3 border border-orange-500 rounded-md p-4">
-          <h3 className="bg-orange-500 text-white font-bold px-4 py-2 rounded-md mb-4">
+        <div className="col-span-3 border border-[#ffe5ec] rounded-md p-4">
+          <h3 className="bg-[#ffe5ec] text-[#333333] font-bold px-4 py-2 rounded-md mb-4">
             MẸO VẶT
           </h3>
           <div className="space-y-3 overflow-y-auto max-h-[400px]">
@@ -92,7 +92,7 @@ const LatestNews = () => {
       <div className="mt-4 text-right">
         <Link
           to="/news"
-          className="text-orange-500 font-semibold hover:underline"
+          className="text-[#333333] font-semibold hover:underline"
         >
           Xem thêm Tin tức mới nhất &rarr;
         </Link>

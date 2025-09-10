@@ -3,6 +3,7 @@ import { FiSearch } from 'react-icons/fi';
 import { HiChevronDown } from 'react-icons/hi';
 import { NavLink, useNavigate } from 'react-router-dom';
 import CartContext from '../../context/CartContext';
+import logo from '../../images/logo.png';
 
 const categories = [
   { id: 1, name: 'Giấy cuộn', slug: 'giay-cuon' },
@@ -74,13 +75,15 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[#43bb1b] text-white font-sans sticky top-0 z-100">
+    <header className=" text-[#333333] font-sans sticky top-0 z-100">
       <div className="w-full max-w-[400px] md:max-w-[680px] lg:max-w-[1024px] m-auto">
         {/* Top bar */}
-        <div className="flex flex-col md:flex-row lg:flex-row items-center px-5 py-3">
+        <div className="flex flex-col h-[120px] md:flex-row lg:flex-row items-center px-5 py-3">
           {/* Logo */}
           <NavLink to={'/'}>
-            <div className=" text-2xl font-bold">SUKIMOKO</div>
+            <div className="w-[80px] h-[60px] md:h-[120px] lg:h-[120px] md:w-[140px] lg:w-[140px] text-2xl font-bold">
+              <img src={logo} alt="SUKIMOKO" />
+            </div>
           </NavLink>
 
           {/* Search bar */}
@@ -139,13 +142,13 @@ const Header = () => {
         </div>
 
         {/* Navigation menu */}
-        <nav className="hidden md:block lg:block bg-[#43bb1b] border-t border-white">
+        <nav className="hidden md:block lg:block bg-[#ffe5ec] border-t border-white">
           <ul className="flex flex-col md:flex-row lg:flex-row items-center space-x-10 px-5 py-3 text-lg">
             <li>
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  isActive ? 'underline' : 'hover:underline'
+                  isActive ? 'underline' : 'hover:underline hover:opacity-50'
                 }
               >
                 Trang chủ
@@ -155,7 +158,7 @@ const Header = () => {
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  isActive ? 'underline' : 'hover:underline'
+                  isActive ? 'underline' : 'hover:underline hover:opacity-50'
                 }
               >
                 Giới thiệu
@@ -167,7 +170,7 @@ const Header = () => {
               onMouseLeave={handleMouseLeave}
             >
               <button
-                className="inline-flex items-center justify-center w-full px-4 py-2 text-lg text-white bg-[#43bb1b] rounded-md hover:bg-[#3da316] transition"
+                className="inline-flex items-center justify-center w-full px-4 py-2 text-lg text-[#333333] bg-[#ffe5ec] rounded-md hover:bg-[pink] transition"
                 onClick={() => {
                   setIsClicked(!isClicked);
                   setIsSubmenuOpen(!isSubmenuOpen);
@@ -175,7 +178,7 @@ const Header = () => {
               >
                 Sản phẩm
                 <HiChevronDown
-                  className={`ml-2 w-5 h-5 text-white transform transition-transform duration-300 ${
+                  className={`ml-2 w-5 h-5 text-[#333333] transform transition-transform duration-300 ${
                     isSubmenuOpen || isClicked ? 'rotate-180' : ''
                   }`}
                 />
@@ -235,7 +238,7 @@ const Header = () => {
               <NavLink
                 to="/news"
                 className={({ isActive }) =>
-                  isActive ? 'underline' : 'hover:underline'
+                  isActive ? 'underline' : 'hover:underline hover:opacity-50'
                 }
               >
                 Tin tức
@@ -245,7 +248,7 @@ const Header = () => {
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
-                  isActive ? 'underline' : 'hover:underline'
+                  isActive ? 'underline' : 'hover:underline hover:opacity-50'
                 }
               >
                 Liên hệ

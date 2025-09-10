@@ -88,13 +88,13 @@ const BestSellingProducts = () => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-sm m-auto mt-10">
-      <div className="flex justify-between items-center mb-4 bg-[#43bb1b] p-6 rounded-t-lg ">
-        <h2 className="text-white font-semibold flex items-center">
+      <div className="flex justify-between items-center mb-4 bg-[#ffe5ec] p-6 rounded-t-lg ">
+        <h2 className="text-[#333333] font-semibold flex items-center">
           <FiSliders className="mr-2" />
           Top sản phẩm bán chạy
         </h2>
         <button
-          className="hidden md:block lg:block text-white text-sm hover:underline cursor-pointer"
+          className="hidden md:block lg:block text-[#333333] text-sm hover:underline cursor-pointer"
           onClick={handleShowAllClick}
         >
           Xem tất cả &rarr;

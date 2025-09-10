@@ -83,7 +83,7 @@ const TodaySuggestion = () => {
     <div className="p-4 bg-white rounded-lg shadow-sm m-auto mt-4">
       <div className="mb-4 border-b border-gray-300">
         <h2 className="text-lg font-semibold mb-2 flex items-center">
-          <FaThLarge className="text-orange-500 text-xl mr-2" />
+          <FaThLarge className="text-[#333333] text-xl mr-2" />
           Gợi ý hôm nay
         </h2>
         <div className="flex space-x-2 overflow-x-auto mb-4 pb-1">
@@ -93,8 +93,8 @@ const TodaySuggestion = () => {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-md cursor-pointer whitespace-nowrap ${
                 activeTab === tab
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                  ? 'bg-gray-300 text-gray-700 font-semibold'
+                  : 'bg-[#ffe5ec] text-[333333] '
               }`}
             >
               {tab}
@@ -146,7 +146,7 @@ const TodaySuggestion = () => {
       <div className="mt-4 text-center">
         {!showAllProducts && (
           <button
-            className="px-6 py-2 cursor-pointer border border-orange-500 text-orange-500 rounded-md hover:bg-orange-500 hover:text-white transition"
+            className="px-6 py-2 cursor-pointer border border-[ffe5ec] text-[#333333] rounded-md hover:bg-[#ffe5ec] hover:text-[#333333] transition"
             onClick={handleShowMoreClick}
           >
             Xem thêm

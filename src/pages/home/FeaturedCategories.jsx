@@ -96,9 +96,9 @@ const FeatureCategories = () => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-sm m-auto">
-      <div className="flex justify-between items-center mb-10 bg-[#43bb1b] p-4 rounded-sm">
-        <h2 className="text-lg font-semibold flex items-center text-white">
-          <div className="mr-2 text-[#434941]">
+      <div className="flex justify-between items-center mb-10 bg-[#ffe5ec] p-4 rounded-sm">
+        <h2 className="text-lg font-semibold flex items-center text-[#333333]">
+          <div className="mr-2">
             <FaAward />
           </div>
           Danh mục nổi bật
