@@ -1,3 +1,7 @@
+import vch1 from '../../images/vch1.png';
+import vch2 from '../../images/vch2.png';
+import vch3 from '../../images/vch3.png';
+
 const BannerVoucher = () => {
   return (
     <>
@@ -5,7 +9,7 @@ const BannerVoucher = () => {
         <div className="relative  grid grid-cols-3 gap-8 lg:gap-10 my-10 mx-2">
           <div className="relative w-full max-w-lg group overflow-hidden rounded-xl">
             <img
-              src="https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6jelbnfnqd4b0.webp"
+              src={vch1}
               alt="Overlay Hover Image"
               className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -19,7 +23,7 @@ const BannerVoucher = () => {
 
           <div className="relative w-full max-w-lg group overflow-hidden rounded-xl">
             <img
-              src="https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6qeme5dh9k131.webp"
+              src={vch2}
               alt="Overlay Hover Image"
               className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -33,7 +37,7 @@ const BannerVoucher = () => {
 
           <div className="relative w-full max-w-lg group overflow-hidden rounded-xl">
             <img
-              src="https://down-zl-vn.img.susercontent.com/vn-11134210-7ra0g-m6qeme5dio4hcd.webp"
+              src={vch3}
               alt="Overlay Hover Image"
               className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-105"
             />
