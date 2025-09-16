@@ -13,9 +13,9 @@ const BannerVoucher = () => {
       .then(async (res) => {
         if (!res.ok) throw new Error('No voucher');
         const data = await res.json();
-        // Giả sử API trả về mảng url, lấy 3 ảnh mới nhất
-        if (Array.isArray(data) && data.length >= 3) {
-          setVoucherUrls(data.slice(-3).map(url => apiUrl + url));
+        // API trả về { urls: [...] }
+        if (Array.isArray(data.urls) && data.urls.length >= 3) {
+          setVoucherUrls(data.urls.slice(-3).map(url => apiUrl + url));
         } else {
           setVoucherUrls([vch1, vch2, vch3]);
         }

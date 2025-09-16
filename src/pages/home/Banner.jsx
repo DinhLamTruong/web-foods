@@ -11,9 +11,9 @@ const Banner = () => {
       .then(async (res) => {
         if (!res.ok) throw new Error('No banner');
         const data = await res.json();
-        // Giả sử API trả về mảng url, lấy ảnh mới nhất
-        if (Array.isArray(data) && data.length > 0) {
-          setBannerUrl(apiUrl + data[data.length - 1]);
+        // API trả về { urls: [...] }
+        if (Array.isArray(data.urls) && data.urls.length > 0) {
+          setBannerUrl(apiUrl + data.urls[data.urls.length - 1]);
         } else {
           setBannerUrl(bannerDefault);
         }
