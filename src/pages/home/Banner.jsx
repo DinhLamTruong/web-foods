@@ -7,7 +7,7 @@ const Banner = () => {
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-    fetch(`${apiUrl}/uploads/banner`)
+    fetch(`${apiUrl}/upload/banner`)
       .then(async (res) => {
         if (!res.ok) throw new Error('No banner');
         const data = await res.json();

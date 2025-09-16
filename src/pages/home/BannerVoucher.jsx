@@ -9,7 +9,7 @@ const BannerVoucher = () => {
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-    fetch(`${apiUrl}/uploads/voucher`)
+    fetch(`${apiUrl}/upload/voucher`)
       .then(async (res) => {
         if (!res.ok) throw new Error('No voucher');
         const data = await res.json();
