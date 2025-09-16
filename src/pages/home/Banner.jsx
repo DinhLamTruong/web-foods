@@ -1,14 +1,14 @@
-
 import React, { useEffect, useState } from 'react';
-import bannerDefault from "../../images/banner.png";
+import bannerDefault from '../../images/banner.png';
+
+const apiUrl = 'http://sukimoko-api.ncs.int/';
 
 const Banner = () => {
   const [bannerUrl, setBannerUrl] = useState(bannerDefault);
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     fetch(`${apiUrl}/upload/banner`)
-      .then(async (res) => {
+      .then(async res => {
         if (!res.ok) throw new Error('No banner');
         const data = await res.json();
         // API trả về { urls: [...] }
