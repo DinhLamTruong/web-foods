@@ -6,7 +6,7 @@ const Banner = () => {
   const [bannerUrl, setBannerUrl] = useState(bannerDefault);
 
   useEffect(() => {
-    fetch(`${apiUrl}upload/banner`)
+    fetch(`${apiUrl}/upload/banner`)
       .then(async res => {
         if (!res.ok) throw new Error('No banner');
         const data = await res.json();

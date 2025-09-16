@@ -9,7 +9,7 @@ const BannerVoucher = () => {
   const [voucherUrls, setVoucherUrls] = useState([vch1, vch2, vch3]);
 
   useEffect(() => {
-    fetch(`${apiUrl}upload/voucher`)
+    fetch(`${apiUrl}/upload/voucher`)
       .then(async res => {
         if (!res.ok) throw new Error('No voucher');
         const data = await res.json();
