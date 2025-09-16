@@ -3,7 +3,7 @@ import vch1 from '../../images/vch1.png';
 import vch2 from '../../images/vch2.png';
 import vch3 from '../../images/vch3.png';
 
-const apiUrl = 'http://sukimoko-api.ncs.int/';
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const BannerVoucher = () => {
   const [voucherUrls, setVoucherUrls] = useState([vch1, vch2, vch3]);

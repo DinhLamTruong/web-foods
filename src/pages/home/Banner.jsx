@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import bannerDefault from '../../images/banner.png';
 
-const apiUrl = 'http://sukimoko-api.ncs.int/';
-
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 const Banner = () => {
   const [bannerUrl, setBannerUrl] = useState(bannerDefault);
 
