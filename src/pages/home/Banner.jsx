@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import bannerDefault from '../../images/banner.png';
 
-const apiUrl = 'http://sukimoko-api.ncs.int/';
+const apiUrl = 'http://sukimoko-api.ncs.int';
 
 const Banner = () => {
   const [bannerUrl, setBannerUrl] = useState(bannerDefault);
