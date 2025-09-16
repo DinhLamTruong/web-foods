@@ -3,13 +3,13 @@ import vch1 from '../../images/vch1.png';
 import vch2 from '../../images/vch2.png';
 import vch3 from '../../images/vch3.png';
 
-const apiUrl = 'http://sukimoko-api.ncs.int';
+const apiUrl = 'http://sukimoko-api.ncs.int/';
 
 const BannerVoucher = () => {
   const [voucherUrls, setVoucherUrls] = useState([vch1, vch2, vch3]);
 
   useEffect(() => {
-    fetch(`${apiUrl}/upload/voucher`)
+    fetch(`${apiUrl}upload/voucher`)
       .then(async res => {
         if (!res.ok) throw new Error('No voucher');
         const data = await res.json();
