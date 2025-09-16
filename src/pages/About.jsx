@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
@@ -11,7 +10,7 @@ const About = () => {
     // Thay đổi URL API cho đúng môi trường
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     fetch(`${apiUrl}/about`)
-      .then(async (res) => {
+      .then(async res => {
         if (!res.ok) throw new Error('Không lấy được nội dung');
         const data = await res.json();
         setContent(data?.content || '');
@@ -31,9 +30,10 @@ const About = () => {
           <a href="/" className="hover:underline">
             Trang chủ
           </a>{' '}
-          {'>'} <span className="text-orange-600 font-semibold">Giới thiệu</span>
+          {'>'}{' '}
+          <span className="text-orange-600 font-semibold">Giới thiệu</span>
         </nav>
-        <h1 className="text-2xl font-semibold mb-6">Giới thiệu</h1>
+
         <div className="mb-8">
           {loading ? (
             <p>Đang tải nội dung...</p>
