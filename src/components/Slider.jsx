@@ -31,13 +31,7 @@ const Slider = ({ images }) => {
         <FiChevronRight size={24} />
       </button>
 
-      <div className="absolute bottom-10 left-1/2 top-1/3 z-10 -translate-x-1/2 transform">
-        <img
-          src="https://content.pancake.vn/1/s938x938/fwebp/a6/32/30/2f/b6916226d26cb1c7f85bcb76653505b9f4e061e210f9ae82bc291535-w:2048-h:2048-l:682409-t:image/jpeg.jpg"
-          alt="Overlay"
-          className="w-32 h-32 object-cover  border-4 border-white shadow-lg"
-        />
-      </div>
+      
     </>
   );
 };
