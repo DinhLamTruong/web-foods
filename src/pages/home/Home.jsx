@@ -283,7 +283,7 @@ const Home = () => {
         </div>
       </div> */}
 
-      <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg z-100">
+      {/* <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg z-100">
         <div className="flex items-center justify-center gap-4 p-4 shadow-xl">
           <button className="px-6 py-2 border-2 border-red-500 text-red-500 font-bold rounded hover:bg-red-50 transition">
             Liên hệ
@@ -293,7 +293,7 @@ const Home = () => {
             Mua ngay
           </button>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
