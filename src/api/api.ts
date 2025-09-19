@@ -48,7 +48,7 @@ const api = {
   discount: {
     applyCoupon: async (code, cart_total, shippingMethod) => {
       try {
-        const response = await fetch('http://localhost:3001/api/discounts/apply', {
+        const response = await fetch('http://localhost:3001/api/api/discounts/apply', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
