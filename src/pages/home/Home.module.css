@@ -12,7 +12,7 @@
 }
 
 .navItem {
-  border-radius: 0 12px 0 0;
+  border-radius: 0 21px 0 0;
   flex: 1;
   display: flex;
   align-items: center;
@@ -25,7 +25,7 @@
   transition: all 0.3s ease;
   transform: skewX(26deg) perspective(1000px);
   transform-origin: bottom;
-  margin-right: -15px;
+  margin-right: -17px;
   z-index: 1;
 }
 
